@@ -1,8 +1,8 @@
 import asyncio
 import os
 
-from src.core.settings import settings
-from src.core.logger import get_logger
+from core.settings import settings
+from core.logger import get_logger
 from langgraph.store.redis.aio import AsyncRedisStore
 
 logger = get_logger("redis_connection")

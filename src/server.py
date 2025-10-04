@@ -1,13 +1,17 @@
 """MCP Server for LangGraph Memory Store."""
 
-from fastmcp import FastMCP
-from src.database.memory_store import memory_store
-from src.core.logger import get_logger
-from src.core.settings import settings
+from mcp.server import FastMCP
+from database.memory_store import memory_store
+from core.logger import get_logger
+from core.settings import settings
 
 logger = get_logger("mcp_server")
 
-mcp = FastMCP("LangGraph Memory Store")
+mcp = FastMCP(
+    "LangGraph Memory Store",
+    host=settings.HOST,
+    port=settings.PORT,
+)
 
 
 @mcp.tool(
@@ -243,6 +247,6 @@ if __name__ == "__main__":
         mcp.run(transport="stdio")
     elif transport == "streamable-http":
         logger.info(f"Starting MCP server with streamable-http transport on {settings.HOST}:{settings.PORT}")
-        mcp.run(transport="streamable-http", host=settings.HOST, port=settings.PORT)
+        mcp.run(transport="streamable-http")
     else:
         raise ValueError(f"Invalid transport mode: {transport}. Must be 'stdio' or 'streamable-http'")
