@@ -1,5 +1,5 @@
 import os
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class RedisSettings(BaseSettings):
@@ -29,6 +29,26 @@ class Settings(BaseSettings):
     
     # Redis configuration
     redis: RedisSettings = Field(default_factory=RedisSettings)
+    
+    # Memory Store Configuration
+    ALLOWED_NAMESPACES: list[str] = Field(
+        default_factory=list,
+        description="List of allowed namespaces. Empty list means all namespaces are allowed."
+    )
+    READ_ONLY_FILES: list[str] = Field(
+        default_factory=list,
+        description="List of read-only files in format 'namespace/key'"
+    )
+    
+    @field_validator('ALLOWED_NAMESPACES', 'READ_ONLY_FILES', mode='before')
+    @classmethod
+    def parse_comma_separated(cls, v):
+        """Parse comma-separated string into list."""
+        if isinstance(v, str):
+            if not v.strip():
+                return []
+            return [item.strip() for item in v.split(',') if item.strip()]
+        return v or []
     
     model_config = SettingsConfigDict(
         case_sensitive=True,
