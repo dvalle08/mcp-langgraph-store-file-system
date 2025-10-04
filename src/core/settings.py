@@ -1,5 +1,5 @@
 import os
-from pydantic import Field, field_validator
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class RedisSettings(BaseSettings):
@@ -27,28 +27,38 @@ class Settings(BaseSettings):
     DEBUG: bool = Field(default=True, description="Debug mode")
     LOG_LEVEL: str = Field(default="INFO", description="Logging level")
     
+    # MCP Server Configuration
+    TRANSPORT: str = Field(
+        default="stdio",
+        description="MCP transport mode: 'stdio' or 'streamable-http'"
+    )
+    HOST: str = Field(default="0.0.0.0", description="HTTP server host (for streamable-http)")
+    PORT: int = Field(default=8000, description="HTTP server port (for streamable-http)")
+    
     # Redis configuration
     redis: RedisSettings = Field(default_factory=RedisSettings)
     
     # Memory Store Configuration
-    ALLOWED_NAMESPACES: list[str] = Field(
-        default_factory=list,
-        description="List of allowed namespaces. Empty list means all namespaces are allowed."
+    ALLOWED_NAMESPACES: str = Field(
+        default="",
+        description="Comma-separated list of allowed namespaces. Empty means all namespaces are allowed."
     )
-    READ_ONLY_FILES: list[str] = Field(
-        default_factory=list,
-        description="List of read-only files in format 'namespace/key'"
+    READ_ONLY_FILES: str = Field(
+        default="",
+        description="Comma-separated list of read-only files in format 'namespace/key'"
     )
     
-    @field_validator('ALLOWED_NAMESPACES', 'READ_ONLY_FILES', mode='before')
-    @classmethod
-    def parse_comma_separated(cls, v):
-        """Parse comma-separated string into list."""
-        if isinstance(v, str):
-            if not v.strip():
-                return []
-            return [item.strip() for item in v.split(',') if item.strip()]
-        return v or []
+    def get_allowed_namespaces(self) -> list[str]:
+        """Get list of allowed namespaces from comma-separated string."""
+        if not self.ALLOWED_NAMESPACES or not self.ALLOWED_NAMESPACES.strip():
+            return []
+        return [item.strip() for item in self.ALLOWED_NAMESPACES.split(',') if item.strip()]
+    
+    def get_read_only_files(self) -> list[str]:
+        """Get list of read-only files from comma-separated string."""
+        if not self.READ_ONLY_FILES or not self.READ_ONLY_FILES.strip():
+            return []
+        return [item.strip() for item in self.READ_ONLY_FILES.split(',') if item.strip()]
     
     model_config = SettingsConfigDict(
         case_sensitive=True,

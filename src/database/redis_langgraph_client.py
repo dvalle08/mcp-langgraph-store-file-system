@@ -3,10 +3,6 @@ import os
 
 from src.core.settings import settings
 from src.core.logger import get_logger
-
-from langgraph.checkpoint.redis import RedisSaver
-from langgraph.checkpoint.redis.aio import AsyncRedisSaver
-from langgraph.store.redis import RedisStore
 from langgraph.store.redis.aio import AsyncRedisStore
 
 logger = get_logger("redis_connection")

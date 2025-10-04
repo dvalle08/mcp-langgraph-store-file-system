@@ -3,6 +3,7 @@
 from fastmcp import FastMCP
 from src.database.memory_store import memory_store
 from src.core.logger import get_logger
+from src.core.settings import settings
 
 logger = get_logger("mcp_server")
 
@@ -229,3 +230,16 @@ async def edit_file(namespace: str, key: str, content: str) -> dict:
             "error": str(e),
             "type": "error"
         }
+
+
+if __name__ == "__main__":
+    transport = settings.TRANSPORT.lower()
+    
+    if transport == "stdio":
+        logger.info("Starting MCP server with stdio transport")
+        mcp.run(transport="stdio")
+    elif transport == "streamable-http":
+        logger.info(f"Starting MCP server with streamable-http transport on {settings.HOST}:{settings.PORT}")
+        mcp.run(transport="streamable-http", host=settings.HOST, port=settings.PORT)
+    else:
+        raise ValueError(f"Invalid transport mode: {transport}. Must be 'stdio' or 'streamable-http'")

@@ -23,14 +23,16 @@ class MemoryStore:
     
     def _is_namespace_allowed(self, namespace: str) -> bool:
         """Check if namespace is in allowed list (empty list = all allowed)."""
-        if not self.settings.ALLOWED_NAMESPACES:
+        allowed = self.settings.get_allowed_namespaces()
+        if not allowed:
             return True
-        return namespace in self.settings.ALLOWED_NAMESPACES
+        return namespace in allowed
     
     def _is_read_only(self, namespace: str, key: str) -> bool:
         """Check if a file is marked as read-only."""
         file_path = f"{namespace}/{key}"
-        return file_path in self.settings.READ_ONLY_FILES
+        read_only_files = self.settings.get_read_only_files()
+        return file_path in read_only_files
     
     def _validate_identifier(self, identifier: str, name: str = "identifier") -> None:
         """Validate namespace or key format."""
