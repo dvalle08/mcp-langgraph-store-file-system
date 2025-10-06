@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     HOST: str = Field(default="0.0.0.0", description="HTTP server host (for streamable-http)")
     PORT: int = Field(default=8000, description="HTTP server port (for streamable-http)")
     
+    # User Configuration
+    USER_ID: str = Field(default="default-user", description="User identifier for memory store")
+    
     # Redis configuration
     redis: RedisSettings = Field(default_factory=RedisSettings)
     

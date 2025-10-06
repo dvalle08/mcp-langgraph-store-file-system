@@ -14,12 +14,14 @@ logger = get_logger("memory_store")
 class MemoryStore:
     """Wrapper class for LangGraph store operations with validation and metadata."""
     
-    # User ID for the store (can be configured per user in future)
-    USER_ID = "default_user"
-    
     def __init__(self):
         self.settings = settings
         self._validate_pattern = re.compile(r'^[a-zA-Z0-9_-]+$')
+    
+    @property
+    def USER_ID(self) -> str:
+        """Get the user ID from settings."""
+        return self.settings.USER_ID
     
     def _is_namespace_allowed(self, namespace: str) -> bool:
         """Check if namespace is in allowed list (empty list = all allowed)."""
