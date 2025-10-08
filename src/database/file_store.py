@@ -1,4 +1,4 @@
-"""Memory Store Manager for LangGraph Redis Store operations."""
+"""File Store Manager for LangGraph Redis Store operations."""
 
 import re
 from datetime import datetime
@@ -8,10 +8,10 @@ from core.logger import get_logger
 from core.settings import settings
 from database.redis_langgraph_client import redis_connection
 
-logger = get_logger("memory_store")
+logger = get_logger("file_store")
 
 
-class MemoryStore:
+class FileStore:
     """Wrapper class for LangGraph store operations with validation and metadata."""
     
     def __init__(self):
@@ -24,11 +24,22 @@ class MemoryStore:
         return self.settings.USER_ID
     
     def _is_namespace_allowed(self, namespace: str) -> bool:
-        """Check if namespace is in allowed list (empty list = all allowed)."""
-        allowed = self.settings.get_allowed_namespaces()
+        """Check if namespace is in allowed list (empty list = all allowed).
+        
+        Special handling for agent_files category if ENABLE_AGENT_FILES is True.
+        """
+        # Allow agent_files category if enabled
+        if self.settings.ENABLE_AGENT_FILES and namespace == self.settings.AGENT_FILES_CATEGORY:
+            return True
+        
+        # For other categories, check allowed list (empty = all allowed)
+        allowed = self.settings.get_allowed_files()
         if not allowed:
             return True
-        return namespace in allowed
+        
+        # This method is for namespace/category checking, so always return True
+        # since file-level filtering is done elsewhere
+        return True
     
     def _is_read_only(self, namespace: str, key: str) -> bool:
         """Check if a file is marked as read-only."""
@@ -268,5 +279,5 @@ class MemoryStore:
 
 
 # Global instance
-memory_store = MemoryStore()
+file_store = FileStore()
 

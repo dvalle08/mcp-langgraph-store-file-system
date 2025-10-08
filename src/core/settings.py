@@ -42,20 +42,32 @@ class Settings(BaseSettings):
     redis: RedisSettings = Field(default_factory=RedisSettings)
     
     # Memory Store Configuration
-    ALLOWED_NAMESPACES: str = Field(
+    CONFIG_DIR: str = Field(
+        default="files",
+        description="Directory containing JSON configuration files for memories"
+    )
+    ALLOWED_FILES: str = Field(
         default="",
-        description="Comma-separated list of allowed namespaces. Empty means all namespaces are allowed."
+        description="Comma-separated list of allowed file names. Empty means all files are allowed."
     )
     READ_ONLY_FILES: str = Field(
         default="",
-        description="Comma-separated list of read-only files in format 'namespace/key'"
+        description="Comma-separated list of read-only files in format 'memory_category/file_name'"
+    )
+    ENABLE_AGENT_FILES: bool = Field(
+        default=False,
+        description="Allow agent to create files in 'agent_files' category for plans and notes"
+    )
+    AGENT_FILES_CATEGORY: str = Field(
+        default="agent_files",
+        description="Category name for agent-created files"
     )
     
-    def get_allowed_namespaces(self) -> list[str]:
-        """Get list of allowed namespaces from comma-separated string."""
-        if not self.ALLOWED_NAMESPACES or not self.ALLOWED_NAMESPACES.strip():
+    def get_allowed_files(self) -> list[str]:
+        """Get list of allowed file names from comma-separated string."""
+        if not self.ALLOWED_FILES or not self.ALLOWED_FILES.strip():
             return []
-        return [item.strip() for item in self.ALLOWED_NAMESPACES.split(',') if item.strip()]
+        return [item.strip() for item in self.ALLOWED_FILES.split(',') if item.strip()]
     
     def get_read_only_files(self) -> list[str]:
         """Get list of read-only files from comma-separated string."""
@@ -74,6 +86,13 @@ class Settings(BaseSettings):
         super().__init__(**kwargs)
         # Initialize nested settings
         self.redis = RedisSettings()
+        # Initialize file config manager
+        from core.file_config import FileConfigManager
+        allowed_files = self.get_allowed_files()
+        self.file_config = FileConfigManager(
+            config_dir=self.CONFIG_DIR,
+            allowed_files=allowed_files if allowed_files else None
+        )
 
 
 # Global settings instance

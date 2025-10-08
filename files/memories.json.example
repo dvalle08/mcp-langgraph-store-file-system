@@ -1,0 +1,19 @@
+{
+  "files": [
+    {
+      "file_name": "file-1",
+      "file_description": "Description of what this file stores",
+      "read_trigger": "When to read this file",
+      "write_trigger": "When to create this file",
+      "update_trigger": "When to update this file"
+    },
+    {
+      "file_name": "file-2",
+      "file_description": "Description of another file",
+      "read_trigger": "When to read this file",
+      "write_trigger": "When to create this file",
+      "update_trigger": "When to update this file"
+    }
+  ]
+}
+

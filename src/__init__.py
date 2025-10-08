@@ -2,13 +2,13 @@
 
 from core.logger import get_logger
 from core.settings import settings
-from database.memory_store import memory_store
+from database.file_store import file_store
 from database.redis_langgraph_client import redis_connection
 
 __all__ = [
     "get_logger",
     "settings",
-    "memory_store",
+    "file_store",
     "redis_connection",
 ]
 

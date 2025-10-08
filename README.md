@@ -61,12 +61,74 @@ REDIS_PORT=6379
 REDIS_PASSWORD=
 REDIS_DB=0
 
-# Optional: Restrict namespaces (comma-separated, empty = all allowed)
-ALLOWED_NAMESPACES=
+# Optional: Configuration directory (default: files)
+CONFIG_DIR=files
 
-# Optional: Read-only files (format: namespace/key)
+# Optional: Restrict files (comma-separated, empty = all allowed)
+ALLOWED_FILES=
+
+# Optional: Read-only files (format: memory_category/file_name)
 READ_ONLY_FILES=
+
+# Optional: Allow agent to create files in dedicated category
+ENABLE_AGENT_FILES=false
+AGENT_FILES_CATEGORY=agent_files
 ```
+
+### Memory Configuration
+
+Memory configurations are defined in JSON files within the `files/` directory. Each JSON file represents a memory category, and the filename (without .json) becomes the category name.
+
+**Setup:**
+
+1. The `files/` directory contains your memory configurations
+2. Each `.json` file defines a category (e.g., `memories.json` → category "memories")
+3. Inside each JSON file, define the individual files:
+
+```json
+{
+  "files": [
+    {
+      "file_name": "programming-style",
+      "file_description": "User's programming patterns and preferences",
+      "read_trigger": "When programming or working on code",
+      "write_trigger": "When first tracking programming patterns",
+      "update_trigger": "When errors are corrected or new patterns emerge"
+    }
+  ]
+}
+```
+
+**Structure:**
+
+```
+files/
+  memories.json              # Category: "memories"
+  programming-style.json     # Category: "programming-style"
+  custom-category.json       # Category: "custom-category"
+  *.json.example             # Example files (ignored by system)
+```
+
+**Configuration Fields:**
+
+- `file_name`: The memory file identifier
+- `file_description`: What this memory stores
+- `read_trigger`: When the AI should read this memory
+- `write_trigger`: When the AI should create this memory
+- `update_trigger`: When the AI should update this memory
+
+**Benefits:**
+
+- **Intuitive Structure**: Filename = category name
+- **Scalable**: Create as many JSON files as needed
+- **Flexible**: Each category can have multiple files
+- **Guided AI**: Triggers help the agent know when to use each memory
+
+**Agent Files:**
+
+Enable `ENABLE_AGENT_FILES=true` to allow the AI agent to create its own files in the `agent_files` category for plans, notes, and relevant conversation information.
+
+**Note:** The server must be restarted after modifying configuration files.
 
 ## AI Client Integration
 
@@ -121,17 +183,17 @@ Use the same JSON configuration as Cursor.
 
 ## Available Tools
 
-### `ls(path="")` - List Namespaces/Memories
-- Empty path: List all namespaces
-- With namespace: List memories in that namespace
+### `ls(memory_category="")` - List Categories/Memories
+- Empty memory_category: List all memory categories
+- With memory_category: List memories in that category
 
-### `read_file(namespace, key)` - Read Memory
+### `read_file(memory_category, file_name)` - Read Memory
 - Returns content and metadata for a memory
 
-### `write_file(namespace, key, content)` - Create/Update Memory
+### `write_file(memory_category, file_name, content)` - Create/Update Memory
 - Creates or overwrites a memory
 
-### `edit_file(namespace, key, content)` - Update Existing Memory
+### `edit_file(memory_category, file_name, content)` - Update Existing Memory
 - Updates existing memory (fails if doesn't exist)
 
 ## Usage Examples
@@ -166,6 +228,8 @@ The AI will automatically read and apply your preferences.
 - `context` - Project-specific information
 - `constraints` - Requirements and limitations
 - `examples` - Reference templates
+
+**Tip:** Create JSON files in the `files/` directory for each category to give the AI agent clear guidance on when to use each memory.
 
 ## Transport Modes
 

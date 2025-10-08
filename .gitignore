@@ -144,7 +144,6 @@ ENV/
 env.bak/
 venv.bak/
 dev/
-ideas.md
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -206,3 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Memory configuration files (keep example files only)
+files/*.json
+!files/*.json.example

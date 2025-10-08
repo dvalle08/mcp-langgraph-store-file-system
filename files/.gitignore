@@ -1,0 +1,7 @@
+# Ignore all JSON files except examples
+*.json
+
+# Keep example files
+!*.json.example
+!.gitignore
+
