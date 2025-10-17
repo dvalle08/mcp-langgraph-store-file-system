@@ -25,34 +25,114 @@ else:
 @mcp.tool(
     name="ls",
     annotations={"readOnlyHint": True},
-    description=f"""List available memory categories and files.
+    description=f"""List configured memory files and categories.
 
 Use this to explore what memories are available:
-- Without memory_category: Lists all memory categories
-- With memory_category: Lists all files in that category{file_config.format_files_for_tool_description()}
+- Without memory_category: Lists all configured files across all categories
+- With memory_category: Lists configured files in that specific category
+- With show_all_available=True: Lists all namespaces in the store (shows what's accessible vs what exists){file_config.format_files_for_tool_description()}
 """
 )
-async def ls(memory_category: str = "") -> dict:
-    """List available files and categories."""
+async def ls(memory_category: str = "", show_all_available: bool = False) -> dict:
+    """List available files and categories from configuration."""
     try:
-        if not memory_category:
-            # List all categories
-            categories = await file_store.list_namespaces()
-            logger.info(f"Listed {len(categories)} memory categories")
+        # If show_all_available is True, list all namespaces from the store
+        if show_all_available:
+            all_namespaces = await file_store.list_namespaces()
+            
+            # Get allowed files to determine access
+            allowed_files = settings.get_allowed_files()
+            configured_categories = file_config.get_all_categories()
+            
+            # Annotate each namespace with access information
+            annotated_namespaces = []
+            for ns in all_namespaces:
+                ns_name = ns["name"]
+                # Check if this namespace has any accessible files
+                has_access = False
+                if not allowed_files:
+                    # No restrictions, all accessible
+                    has_access = True
+                elif ns_name in configured_categories:
+                    # Check if any files in this category are accessible
+                    category_files = file_config.get_files_by_category(ns_name)
+                    has_access = any(f.file_name in allowed_files for f in category_files)
+                
+                annotated_namespaces.append({
+                    **ns,
+                    "accessible": has_access,
+                    "configured": ns_name in configured_categories
+                })
+            
+            logger.info(f"Listed {len(all_namespaces)} available namespaces from store")
             return {
-                "type": "categories",
-                "count": len(categories),
-                "categories": categories
+                "type": "all_namespaces",
+                "count": len(annotated_namespaces),
+                "namespaces": annotated_namespaces,
+                "note": "Only files in 'accessible' and 'configured' namespaces can be read/written by the agent"
+            }
+        
+        # List configured files from file_config
+        if not memory_category:
+            # List all configured files across all categories
+            if not file_config.has_configurations():
+                logger.info("No file configurations loaded")
+                return {
+                    "type": "configured_files",
+                    "count": 0,
+                    "files": [],
+                    "note": "No file configurations loaded. Use show_all_available=True to see all namespaces in the store."
+                }
+            
+            # Group files by category
+            categories_data = {}
+            for mem_config in file_config.files:
+                if mem_config.memory_category not in categories_data:
+                    categories_data[mem_config.memory_category] = []
+                categories_data[mem_config.memory_category].append({
+                    "file_name": mem_config.file_name,
+                    "description": mem_config.file_description,
+                    "read_trigger": mem_config.read_trigger
+                })
+            
+            logger.info(f"Listed {len(file_config.files)} configured files across {len(categories_data)} categories")
+            return {
+                "type": "configured_files",
+                "count": len(file_config.files),
+                "categories_count": len(categories_data),
+                "files_by_category": categories_data
             }
         else:
-            # List files in the specified category
-            files = await file_store.list_memories(memory_category)
-            logger.info(f"Listed {len(files)} files in category '{memory_category}'")
+            # List files in the specified category from configuration
+            category_files = file_config.get_files_by_category(memory_category)
+            
+            if not category_files:
+                logger.info(f"No configured files in category '{memory_category}'")
+                return {
+                    "type": "category_files",
+                    "memory_category": memory_category,
+                    "count": 0,
+                    "files": [],
+                    "note": f"No configured files in category '{memory_category}'. Use show_all_available=True to see if this namespace exists in the store."
+                }
+            
+            files_data = [
+                {
+                    "file_name": mem.file_name,
+                    "description": mem.file_description,
+                    "read_trigger": mem.read_trigger,
+                    "write_trigger": mem.write_trigger,
+                    "update_trigger": mem.update_trigger
+                }
+                for mem in category_files
+            ]
+            
+            logger.info(f"Listed {len(files_data)} configured files in category '{memory_category}'")
             return {
-                "type": "files",
+                "type": "category_files",
                 "memory_category": memory_category,
-                "count": len(files),
-                "files": files
+                "count": len(files_data),
+                "files": files_data
             }
     except Exception as e:
         logger.error(f"Error in ls: {str(e)}")

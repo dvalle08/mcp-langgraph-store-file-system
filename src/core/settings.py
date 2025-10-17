@@ -1,6 +1,7 @@
 import os
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from core.file_config import FileConfigManager
 
 class RedisSettings(BaseSettings):
     """Redis connection settings."""
@@ -62,6 +63,10 @@ class Settings(BaseSettings):
         default="agent_files",
         description="Category name for agent-created files"
     )
+    file_config: FileConfigManager | None = Field(
+        default=None,
+        description="File configuration manager instance"
+    )
     
     def get_allowed_files(self) -> list[str]:
         """Get list of allowed file names from comma-separated string."""
@@ -87,8 +92,8 @@ class Settings(BaseSettings):
         # Initialize nested settings
         self.redis = RedisSettings()
         # Initialize file config manager
-        from core.file_config import FileConfigManager
         allowed_files = self.get_allowed_files()
+        self.model_fields_set.add('file_config')  # Mark file_config as set
         self.file_config = FileConfigManager(
             config_dir=self.CONFIG_DIR,
             allowed_files=allowed_files if allowed_files else None
