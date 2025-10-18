@@ -69,10 +69,6 @@ ALLOWED_FILES=
 
 # Optional: Read-only files (format: memory_category/file_name)
 READ_ONLY_FILES=
-
-# Optional: Allow agent to create files in dedicated category
-ENABLE_AGENT_FILES=false
-AGENT_FILES_CATEGORY=agent_files
 ```
 
 ### Memory Configuration
@@ -123,10 +119,6 @@ files/
 - **Scalable**: Create as many JSON files as needed
 - **Flexible**: Each category can have multiple files
 - **Guided AI**: Triggers help the agent know when to use each memory
-
-**Agent Files:**
-
-Enable `ENABLE_AGENT_FILES=true` to allow the AI agent to create its own files in the `agent_files` category for plans, notes, and relevant conversation information.
 
 **Note:** The server must be restarted after modifying configuration files.
 

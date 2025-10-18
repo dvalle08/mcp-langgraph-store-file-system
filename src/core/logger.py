@@ -13,7 +13,7 @@ class ColoredFormatter(logging.Formatter):
         'WARNING': '\033[33m',    # Yellow
         'ERROR': '\033[31m',      # Red
         'CRITICAL': '\033[35m',   # Magenta
-        'RESET': '\033[0m'        # Reset
+        'RESET': '\033[0m'         
     }
     
     def format(self, record):

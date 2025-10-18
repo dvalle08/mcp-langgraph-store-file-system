@@ -24,15 +24,8 @@ class FileStore:
         return self.settings.USER_ID
     
     def _is_namespace_allowed(self, namespace: str) -> bool:
-        """Check if namespace is in allowed list (empty list = all allowed).
-        
-        Special handling for agent_files category if ENABLE_AGENT_FILES is True.
-        """
-        # Allow agent_files category if enabled
-        if self.settings.ENABLE_AGENT_FILES and namespace == self.settings.AGENT_FILES_CATEGORY:
-            return True
-        
-        # For other categories, check allowed list (empty = all allowed)
+        """Check if namespace is in allowed list (empty list = all allowed)."""
+        # For all categories, check allowed list (empty = all allowed)
         allowed = self.settings.get_allowed_files()
         if not allowed:
             return True

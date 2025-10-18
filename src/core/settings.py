@@ -55,14 +55,6 @@ class Settings(BaseSettings):
         default="",
         description="Comma-separated list of read-only files in format 'memory_category/file_name'"
     )
-    ENABLE_AGENT_FILES: bool = Field(
-        default=False,
-        description="Allow agent to create files in 'agent_files' category for plans and notes"
-    )
-    AGENT_FILES_CATEGORY: str = Field(
-        default="agent_files",
-        description="Category name for agent-created files"
-    )
     file_config: FileConfigManager | None = Field(
         default=None,
         description="File configuration manager instance"
