@@ -7,7 +7,7 @@ This exists for two reasons:
 - Store memories in your own infrastructure so any agent (Cursor, Claude Code, ChatGPT, etc.) can share them.
 
 ### Built on LangGraph Store
-Docs: [LangGraph Store](https://reference.langchain.com/python/langgraph/store/)
+Docs: [LangGraph Store - Long-term Memory](https://docs.langchain.com/oss/python/langgraph/add-memory#add-long-term-memory)
 
 ## Features
 - **Your Choice of Backend**: Redis, PostgreSQL, or MongoDB
@@ -51,13 +51,13 @@ docker run -d -p 27017:27017 mongo:latest
 
 **For AI Clients (stdio):**
 ```bash
-python src/server.py
+uv run src/server.py
 ```
 
 **For HTTP Access:**
 ```bash
 # Set TRANSPORT=streamable-http in .env
-python src/server.py
+uv run src/server.py
 ```
 
 ## Configuration
@@ -146,8 +146,8 @@ files/
 {
   "mcpServers": {
     "memory-store": {
-      "command": "python",
-      "args": ["src/server.py"],
+      "command": "uv",
+      "args": ["run", "src/server.py"],
       "cwd": "/absolute/path/to/mcp-langgraph-store-file-system",
       "env": {
         "REDIS_HOST": "your-redis-host",
@@ -166,8 +166,8 @@ files/
 {
   "mcpServers": {
     "memory-store": {
-      "command": "python",
-      "args": ["src/server.py"],
+      "command": "uv",
+      "args": ["run", "src/server.py"],
       "cwd": "/absolute/path/to/mcp-langgraph-store-file-system",
       "env": {
         "REDIS_HOST": "your-redis-host",
@@ -175,20 +175,6 @@ files/
         "REDIS_PASSWORD": "",
         "REDIS_DB": "0"
       }
-    }
-  }
-}
-```
-
-### Using uv
-
-```json
-{
-  "mcpServers": {
-    "memory-store": {
-      "command": "uv",
-      "args": ["run", "python", "src/server.py"],
-      "cwd": "/absolute/path/to/mcp-langgraph-store-file-system"
     }
   }
 }

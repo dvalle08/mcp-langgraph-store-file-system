@@ -17,9 +17,12 @@ dependencies = [
     "python-dotenv>=1.1.1",
 ]
 
+[project.scripts]
+mcp-langgraph-store = "server:mcp"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
-packages = ["core", "database"]
+packages = ["core", "database", "services"]
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

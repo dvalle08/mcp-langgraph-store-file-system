@@ -1,20 +1,13 @@
-"""MCP Server for LangGraph Memory Store."""
-
-from mcp.server import FastMCP
+from fastmcp import FastMCP
 from services.file_store import file_store
 from core.logger import get_logger
 from core.settings import settings
 
 logger = get_logger("mcp_server")
 
-# Get file configuration manager
 file_config = settings.file_config
 
-mcp = FastMCP(
-    "LangGraph Memory Store",
-    host=settings.HOST,
-    port=settings.PORT,
-)
+mcp = FastMCP("LangGraph Memory Store")
 
 # Log loaded file configurations
 if file_config.has_configurations():
@@ -264,6 +257,6 @@ if __name__ == "__main__":
         mcp.run(transport="stdio")
     elif transport == "streamable-http":
         logger.info(f"Starting MCP server with streamable-http transport on {settings.HOST}:{settings.PORT}")
-        mcp.run(transport="streamable-http")
+        mcp.run(transport="streamable-http", host=settings.HOST, port=settings.PORT)
     else:
         raise ValueError(f"Invalid transport mode: {transport}. Must be 'stdio' or 'streamable-http'")
