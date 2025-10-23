@@ -1,7 +1,7 @@
 """MCP Server for LangGraph Memory Store."""
 
 from mcp.server import FastMCP
-from database.file_store import file_store
+from services.file_store import file_store
 from core.logger import get_logger
 from core.settings import settings
 

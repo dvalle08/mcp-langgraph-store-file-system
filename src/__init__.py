@@ -2,7 +2,7 @@
 
 from core.logger import get_logger
 from core.settings import settings
-from database.file_store import file_store
+from services.file_store import file_store
 from database.store_factory import get_store_connection
 from database.redis_langgraph_client import redis_connection
 from database.postgresql_langgraph_client import postgresql_connection
