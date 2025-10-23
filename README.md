@@ -69,20 +69,20 @@ Edit `.env`:
 BACKEND=redis  # redis, postgresql, or mongodb
 
 # Redis Configuration
-REDIS_HOST=localhost
+REDIS_HOST=your-redis-host
 REDIS_PORT=6379
 REDIS_PASSWORD=
 REDIS_DB=0
 
 # PostgreSQL Configuration
-POSTGRES_HOST=localhost
+POSTGRES_HOST=your-postgres-host
 POSTGRES_PORT=5432
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=postgres
 POSTGRES_DATABASE=langgraph_store
 
 # MongoDB Configuration
-MONGODB_URI=mongodb://localhost:27017
+MONGODB_URI=mongodb://your-mongodb-host:27017
 MONGODB_DATABASE=langgraph_store
 MONGODB_COLLECTION=memory_store
 
@@ -150,7 +150,7 @@ files/
       "args": ["src/server.py"],
       "cwd": "/absolute/path/to/mcp-langgraph-store-file-system",
       "env": {
-        "REDIS_HOST": "localhost",
+        "REDIS_HOST": "your-redis-host",
         "REDIS_PORT": "6379",
         "REDIS_PASSWORD": "",
         "REDIS_DB": "0"
@@ -170,7 +170,7 @@ files/
       "args": ["src/server.py"],
       "cwd": "/absolute/path/to/mcp-langgraph-store-file-system",
       "env": {
-        "REDIS_HOST": "localhost",
+        "REDIS_HOST": "your-redis-host",
         "REDIS_PORT": "6379",
         "REDIS_PASSWORD": "",
         "REDIS_DB": "0"
@@ -215,7 +215,7 @@ files/
 For AI clients like Claude Desktop and Cursor. The server communicates via standard input/output.
 
 ### streamable-http
-For HTTP access. Set `TRANSPORT=streamable-http` in `.env` and access at `http://localhost:8000`.
+For HTTP access. Set `TRANSPORT=streamable-http` in `.env` and access at `http://your-host:8000`.
 
 ## Project Structure
 
