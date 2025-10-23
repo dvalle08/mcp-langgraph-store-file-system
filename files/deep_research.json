@@ -1,0 +1,27 @@
+{
+  "files": [
+    {
+      "file_name": "research-brief",
+      "file_description": "Canonical brief for research tasks: scope, goals, constraints, sources to include/exclude, timebox, and deliverable format.",
+      "read_trigger": "Before starting ANY research task, the agent MUST read this to confirm scope, constraints, approved sources, and deliverable expectations; if gaps exist, ask targeted clarifying questions BEFORE querying sources.",
+      "write_trigger": "Create when a new research initiative is defined or when the user provides scope/goals; include a checklist for success criteria and deliverable templates.",
+      "update_trigger": "Update whenever scope, constraints, timebox, or deliverable expectations change; record rationale and date of change."
+    },
+    {
+      "file_name": "research-methodology",
+      "file_description": "Preferred methodology: source hierarchy (primary/official > reputable > secondary), verification steps, note-taking structure, and citation style.",
+      "read_trigger": "Before selecting sources, synthesizing findings, or drafting outputs, the agent MUST read and apply the methodology including verification and citation rules.",
+      "write_trigger": "Create when the user defines preferred methods (e.g., prioritize official docs, require 2+ corroborating sources, use a structured note format).",
+      "update_trigger": "Update when verification requirements, citation formats, or source preferences change; include examples of good citations and acceptable sources."
+    },
+    {
+      "file_name": "research-log",
+      "file_description": "Rolling log of queries, sources visited, notes, evidence snapshots, and decisions taken during research.",
+      "read_trigger": "When resuming research or avoiding duplication, the agent MUST read this to reuse prior evidence and continue from the last checkpoint.",
+      "write_trigger": "Create at the first research step and append entries as actions are taken; include timestamps and links.",
+      "update_trigger": "Append after each significant research action, source evaluation, synthesis step, or decision; summarize progress and next steps."
+    }
+  ]
+}
+
+

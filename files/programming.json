@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "file_name": "code-style",
+      "file_description": "Formatting and style preferences across projects (formatter, lint rules, type hints, docstrings, error handling).",
+      "read_trigger": "Before generating, editing, or refactoring ANY code or configuration, the agent MUST read this memory and strictly apply the rules (formatter, lint rules, type hints, docstrings, error handling). If repository tooling (.editorconfig, pyproject.toml, eslint, prettier, etc.) conflicts with this memory, prefer the repository settings, align the output accordingly, and record discovered repo defaults. If key rules are missing, ask targeted questions to fill the gaps BEFORE proceeding.",
+      "write_trigger": "Create immediately when the user states or implies coding style preferences OR when repository tooling reveals defaults. Summarize rules with concrete good/bad examples, list relevant tools and versions, and point to source configs (e.g., files and sections).",
+      "update_trigger": "Update whenever the user corrects style, a linter/formatter error occurs, a new tool or rule is adopted, or repository rules change. Capture the correction, the resulting final rule, and a short example; remove obsolete or conflicting rules."
+    },
+    {
+      "file_name": "planning-style",
+      "file_description": "Preferred approach to planning tasks: granularity of tickets, acceptance criteria, RFC depth, estimation approach, and communication style.",
+      "read_trigger": "Before proposing plans, task breakdowns, RFCs, roadmaps, or estimates, the agent MUST read this memory and adhere to the expected granularity, acceptance criteria format, estimation method, and communication tone. If any element is unclear or missing, ask targeted clarifying questions FIRST, then produce the plan that follows the stored template/checklist.",
+      "write_trigger": "Create when the user first describes how they want plans/RFCs (depth, sections, estimation units) or after the first planning session. Store a reusable template/checklist with example sections and acceptance criteria format.",
+      "update_trigger": "Update when the user requests more/less detail, changes estimation method, modifies acceptance criteria format, or gives planning feedback. Include updated templates and examples that illustrate the new expectations."
+    },
+    {
+      "file_name": "architecture-decisions",
+      "file_description": "Architecture decision records (ADRs): chosen patterns, trade-offs, constraints, and rationale that apply across projects.",
+      "read_trigger": "Before proposing or modifying architecture, dependencies, data models, or patterns, the agent MUST read existing ADRs, respect documented constraints, and reference prior decisions. If a proposal would violate an ADR, present compliant alternatives or propose a new ADR with explicit rationale and mitigations.",
+      "write_trigger": "Create an ADR whenever a notable architecture decision is made. Document context, decision, alternatives, trade-offs, consequences, and constraints. Link to issues/PRs and include a timestamp and status (Proposed/Accepted/Superseded).",
+      "update_trigger": "Update when a decision is superseded or refined. Mark the prior ADR as Superseded (with link), record the new rationale/constraints, and note migration/impact considerations and owners."
+    }
+  ]
+}

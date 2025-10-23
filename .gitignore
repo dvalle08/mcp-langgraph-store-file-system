@@ -207,5 +207,4 @@ marimo/_lsp/
 __marimo__/
 
 # Memory configuration files (keep example files only)
-files/*.json
 !files/*.json.example

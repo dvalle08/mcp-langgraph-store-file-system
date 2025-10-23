@@ -1,0 +1,19 @@
+{
+  "files": [
+    {
+      "file_name": "communication-preferences",
+      "file_description": "How the user prefers to receive responses (concise, detailed, with examples, step-by-step, etc.)",
+      "read_trigger": "At the start of every conversation, the agent MUST read this and adapt tone, detail level, and structure accordingly. If preferences conflict with task constraints, explain the trade-off and ask a targeted clarifying question.",
+      "write_trigger": "Create when the user first expresses communication preferences (e.g., brevity, examples, explanations). Include concrete do/don't examples.",
+      "update_trigger": "Update whenever the user requests a different response format or tone; record explicit examples and remove obsolete guidance."
+    },
+    {
+      "file_name": "writing-style",
+      "file_description": "User's writing style and preferences for emails, posts, letters, and other written content",
+      "read_trigger": "Before drafting ANY written content, the agent MUST read this and mirror tone, structure, and formatting; if samples are insufficient, ask for a reference or constraints before writing.",
+      "write_trigger": "Create when the user provides examples or describes their desired style; capture tone descriptors, structure templates, and formatting rules.",
+      "update_trigger": "Update when the user critiques generated text, provides new samples, or refines tone/voice; include a short before/after example of the change."
+    }
+  ]
+}
+
