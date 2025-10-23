@@ -19,6 +19,45 @@ class RedisSettings(BaseSettings):
         extra="ignore"
     )
 
+class PostgreSQLSettings(BaseSettings):
+    """PostgreSQL connection settings."""
+    
+    HOST: str = Field(default="localhost", description="PostgreSQL host")
+    PORT: int = Field(default=5432, description="PostgreSQL port")
+    USER: str = Field(default="postgres", description="PostgreSQL user")
+    PASSWORD: str = Field(default="", description="PostgreSQL password")
+    DATABASE: str = Field(default="langgraph_store", description="PostgreSQL database name")
+    SSLMODE: str = Field(default="disable", description="PostgreSQL SSL mode")
+    
+    model_config = SettingsConfigDict(
+        env_prefix="POSTGRES_",
+        case_sensitive=True,
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
+    
+    def get_connection_string(self) -> str:
+        """Build PostgreSQL connection string."""
+        password_part = f":{self.PASSWORD}" if self.PASSWORD else ""
+        return f"postgresql://{self.USER}{password_part}@{self.HOST}:{self.PORT}/{self.DATABASE}?sslmode={self.SSLMODE}"
+
+
+class MongoDBSettings(BaseSettings):
+    """MongoDB connection settings."""
+    
+    URI: str = Field(default="mongodb://localhost:27017", description="MongoDB connection URI")
+    DATABASE: str = Field(default="langgraph_store", description="MongoDB database name")
+    COLLECTION: str = Field(default="memory_store", description="MongoDB collection name")
+    
+    model_config = SettingsConfigDict(
+        env_prefix="MONGODB_",
+        case_sensitive=True,
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore"
+    )
+
 
 class Settings(BaseSettings):
     """Application settings."""
@@ -39,8 +78,20 @@ class Settings(BaseSettings):
     # User Configuration
     USER_ID: str = Field(default="default-user", description="User identifier for memory store")
     
+    # Backend Selection
+    BACKEND: str = Field(
+        default="redis",
+        description="Memory store backend: 'redis', 'postgresql', or 'mongodb'"
+    )
+    
     # Redis configuration
     redis: RedisSettings = Field(default_factory=RedisSettings)
+    
+    # PostgreSQL configuration
+    postgresql: PostgreSQLSettings = Field(default_factory=PostgreSQLSettings)
+    
+    # MongoDB configuration
+    mongodb: MongoDBSettings = Field(default_factory=MongoDBSettings)
     
     # Memory Store Configuration
     CONFIG_DIR: str = Field(
@@ -83,6 +134,8 @@ class Settings(BaseSettings):
         super().__init__(**kwargs)
         # Initialize nested settings
         self.redis = RedisSettings()
+        self.postgresql = PostgreSQLSettings()
+        self.mongodb = MongoDBSettings()
         # Initialize file config manager
         allowed_files = self.get_allowed_files()
         self.model_fields_set.add('file_config')  # Mark file_config as set

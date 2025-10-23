@@ -1,4 +1,4 @@
-"""File Store Manager for LangGraph Redis Store operations."""
+"""File Store Manager for LangGraph Store operations."""
 
 import re
 from datetime import datetime
@@ -6,9 +6,12 @@ from typing import Optional, Any
 
 from core.logger import get_logger
 from core.settings import settings
-from database.redis_langgraph_client import redis_connection
+from database.store_factory import get_store_connection
 
 logger = get_logger("file_store")
+
+# Get the store connection based on BACKEND setting
+store_connection = get_store_connection()
 
 
 class FileStore:
@@ -57,7 +60,7 @@ class FileStore:
         """
         logger.debug("Listing all namespaces")
         
-        async with redis_connection.get_store() as store:
+        async with store_connection.get_store() as store:
             # Search for all items to get namespaces
             items = await store.asearch((self.USER_ID,))
             
@@ -97,7 +100,7 @@ class FileStore:
         
         logger.debug(f"Listing memories in namespace: {namespace}")
         
-        async with redis_connection.get_store() as store:
+        async with store_connection.get_store() as store:
             items = await store.asearch((self.USER_ID, namespace))
             
             memories = []
@@ -132,7 +135,7 @@ class FileStore:
         
         logger.debug(f"Reading memory: {namespace}/{key}")
         
-        async with redis_connection.get_store() as store:
+        async with store_connection.get_store() as store:
             item = await store.aget((self.USER_ID, namespace), key)
             
             if item is None:
@@ -172,7 +175,7 @@ class FileStore:
         
         logger.debug(f"Writing memory: {namespace}/{key}")
         
-        async with redis_connection.get_store() as store:
+        async with store_connection.get_store() as store:
             # Store with metadata
             value = {
                 "content": content,
@@ -217,7 +220,7 @@ class FileStore:
         
         logger.debug(f"Updating memory: {namespace}/{key}")
         
-        async with redis_connection.get_store() as store:
+        async with store_connection.get_store() as store:
             # Check if exists
             existing = await store.aget((self.USER_ID, namespace), key)
             if existing is None:
